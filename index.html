@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>پیوند | مجموعه شهید احمدی روشن</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icons/icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="پیوند">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#3E5C50">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FBFAF7;
+    --panel: #FFFFFF;
+    --ink: #23303D;
+    --ink-soft: #6B7684;
+    --gold: #B98B4E;
+    --gold-soft: #EADFCB;
+    --sage: #3E5C50;
+    --sage-soft: #E7EEEA;
+    --plum: #7B5E9E;
+    --plum-soft: #EAE3F0;
+    --teal: #3E6E8C;
+    --teal-soft: #E2EBF0;
+    --border: #E4DFD3;
+    --bubble-other: #F1EDE3;
+    --bubble-own: #3E5C50;
+    --bubble-own-text: #FBF8F2;
+    --danger: #A6473A;
+    --radius: 14px;
+    --shadow-sm: 0 1px 2px rgba(35,48,61,0.05), 0 1px 8px rgba(35,48,61,0.04);
+    --shadow-md: 0 4px 18px rgba(35,48,61,0.09);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #171B18; --panel: #1E2420; --ink: #EDE8DD; --ink-soft: #9CA6A0;
+      --gold: #D2A96B; --gold-soft: #3A3122; --sage: #7FA895; --sage-soft: #24322B;
+      --plum: #B79CD6; --plum-soft: #2E2739; --teal: #8FBBD4; --teal-soft: #1F2B31;
+      --border: #2E3733; --bubble-other: #262E29; --bubble-own: #3E5C50;
+      --bubble-own-text: #F4F1E8; --danger: #D98A7E;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.25); --shadow-md: 0 8px 24px rgba(0,0,0,0.35);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; background: var(--bg); color: var(--ink); font-family: 'Vazirmatn', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  body { overflow: hidden; }
+  button, input, textarea { font-family: inherit; }
+  button { transition: background-color .15s ease, transform .08s ease, opacity .15s ease, color .15s ease; }
+  button:active { transform: scale(0.97); }
+
+  /* اسکرول‌بار ظریف و هم‌رنگ */
+  .room-list, .messages { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+  .room-list::-webkit-scrollbar, .messages::-webkit-scrollbar { width: 6px; }
+  .room-list::-webkit-scrollbar-thumb, .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 6px; }
+  .room-list::-webkit-scrollbar-track, .messages::-webkit-scrollbar-track { background: transparent; }
+
+  .app { display: flex; height: 100vh; height: 100dvh; width: 100%; }
+
+  .sidebar { width: 300px; min-width: 300px; background: var(--panel); border-inline-end: 1px solid var(--border); display: flex; flex-direction: column; }
+  .brand { display: flex; align-items: center; gap: 12px; padding: 22px 20px 16px; }
+  .brand-mark { width: 38px; height: 38px; border-radius: 11px; background: linear-gradient(155deg, var(--sage), var(--ink) 130%); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: var(--shadow-sm); }
+  .brand-mark svg { width: 20px; height: 20px; }
+  .brand-text h1 { font-size: 17px; font-weight: 800; margin: 0; letter-spacing: .1px; }
+  .brand-text p { font-size: 12px; color: var(--ink-soft); margin: 2px 0 0; }
+
+  .install-btn { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0 16px 12px; padding: 10px 14px; border: none; border-radius: 12px; background: var(--gold); color: #FBFAF7; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: var(--shadow-sm); }
+  .install-btn:hover { filter: brightness(1.06); }
+  .ios-banner { margin: 0 16px 12px; padding: 10px 12px; border-radius: 12px; background: var(--sage-soft); color: var(--ink); font-size: 12px; line-height: 1.8; position: relative; padding-inline-end: 30px; }
+  .ios-banner button { position: absolute; top: 6px; left: 8px; border: none; background: none; color: var(--ink-soft); font-size: 13px; cursor: pointer; }
+
+  .room-list { flex: 1; overflow-y: auto; padding: 6px 10px 12px; }
+  .room-list-label { font-size: 11.5px; font-weight: 600; letter-spacing: .3px; color: var(--ink-soft); padding: 10px 10px 6px; }
+  .room-btn { width: 100%; display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: none; background: transparent; border-radius: var(--radius); cursor: pointer; text-align: start; margin-bottom: 2px; transition: background-color .15s ease; }
+  .room-btn:hover { background: var(--sage-soft); }
+  .room-btn.active { background: var(--sage-soft); box-shadow: inset 0 0 0 1px rgba(62,92,80,0.25); }
+  .room-icon { width: 36px; height: 36px; border-radius: 10px; background: var(--gold-soft); color: var(--gold); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; transition: transform .15s ease; }
+  .room-btn:hover .room-icon { transform: scale(1.06); }
+  .room-btn.active .room-icon { background: var(--sage); color: var(--sage-soft); }
+  .room-btn[data-tone="plum"] .room-icon { background: var(--plum-soft); color: var(--plum); }
+  .room-btn[data-tone="teal"] .room-icon { background: var(--teal-soft); color: var(--teal); }
+  .room-btn.active[data-tone="plum"] .room-icon,
+  .room-btn.active[data-tone="teal"] .room-icon { background: var(--sage); color: var(--sage-soft); }
+  .room-info { min-width: 0; flex: 1; }
+  .room-name { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .room-desc { font-size: 12px; color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .me-row { display: flex; align-items: center; gap: 10px; padding: 14px 20px; border-top: 1px solid var(--border); }
+  .avatar { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; border: 1px solid var(--border); background: var(--gold); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; overflow: hidden; letter-spacing: -.3px; }
+  .me-name { font-size: 13px; font-weight: 600; }
+  .me-sub { font-size: 11px; color: var(--ink-soft); }
+  .me-sub button { border: none; background: none; color: var(--sage); font-size: 11px; cursor: pointer; padding: 0; text-decoration: underline; }
+
+  .chat { flex: 1; display: flex; flex-direction: column; min-width: 0; background: var(--bg); }
+  .chat-header {
+    display: flex; align-items: center; gap: 12px; padding: 18px 24px;
+    border-bottom: 1px solid var(--border); background: var(--panel); flex-shrink: 0;
+    position: relative; overflow: hidden;
+  }
+  .chat-header::after {
+    content: ""; position: absolute; inset-inline-start: 0; inset-block-end: -1px; height: 3px; width: 100%;
+    background-image: radial-gradient(circle, var(--gold) 1.4px, transparent 1.6px);
+    background-size: 16px 3px; background-repeat: repeat-x; opacity: .35;
+  }
+  .back-btn { display: none; border: none; background: none; cursor: pointer; padding: 6px; margin-inline-start: -6px; color: var(--ink); border-radius: 8px; }
+  .back-btn:hover { background: var(--sage-soft); }
+  .chat-header h2 { margin: 0; font-size: 16px; font-weight: 700; }
+  .chat-header p { margin: 2px 0 0; font-size: 12px; color: var(--ink-soft); }
+
+  .messages { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 2px; }
+  .date-sep { display: flex; align-items: center; gap: 10px; margin: 18px 0 10px; color: var(--ink-soft); font-size: 11.5px; }
+  .date-sep::before, .date-sep::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  .msg-row { display: flex; gap: 10px; max-width: 640px; margin-top: 12px; animation: msgIn .18s ease; }
+  .msg-row.grouped { margin-top: 2px; }
+  .msg-row.own { flex-direction: row-reverse; margin-inline-start: auto; }
+  .msg-row .avatar { width: 28px; height: 28px; margin-top: 2px; font-size: 11px; }
+  .msg-row.grouped .avatar { visibility: hidden; height: 0; margin: 0; }
+  .msg-body { min-width: 0; }
+  .msg-row.own .msg-body { display: flex; flex-direction: column; align-items: flex-end; }
+  .msg-row.grouped .msg-meta { display: none; }
+  .msg-meta { display: flex; gap: 8px; align-items: baseline; margin-bottom: 3px; font-size: 12px; }
+  .msg-sender { font-weight: 600; }
+  .msg-time { color: var(--ink-soft); font-size: 11px; }
+  .msg-row.grouped .msg-bubble { position: relative; }
+  .msg-row.grouped:hover .msg-bubble::after {
+    content: attr(data-time); position: absolute; top: 50%; transform: translateY(-50%);
+    inset-inline-start: calc(100% + 8px); font-size: 10.5px; color: var(--ink-soft); white-space: nowrap;
+  }
+  .msg-bubble { background: var(--bubble-other); padding: 9px 13px; border-radius: 15px; border-start-start-radius: 4px; font-size: 14px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
+  .msg-row.own .msg-bubble { background: var(--bubble-own); color: var(--bubble-own-text); border-start-start-radius: 15px; border-end-end-radius: 4px; }
+  .msg-row.grouped .msg-bubble { border-start-start-radius: 15px; }
+  .msg-row.own.grouped .msg-bubble { border-end-end-radius: 15px; }
+  @keyframes msgIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  .skeleton { display: flex; flex-direction: column; gap: 16px; padding-top: 4px; }
+  .skeleton-row { display: flex; gap: 10px; max-width: 60%; }
+  .skeleton-row.own { flex-direction: row-reverse; margin-inline-start: auto; }
+  .skeleton-dot { width: 28px; height: 28px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
+  .skeleton-bar { height: 34px; border-radius: 14px; background: var(--border); flex: 1; }
+  .skeleton-dot, .skeleton-bar { animation: pulse 1.4s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: .55; } 50% { opacity: .95; } }
+
+  .empty-state { margin: auto; text-align: center; max-width: 320px; color: var(--ink-soft); }
+  .empty-state .room-icon { width: 52px; height: 52px; font-size: 22px; margin: 0 auto 14px; }
+  .empty-state h3 { color: var(--ink); font-size: 15px; margin: 0 0 6px; }
+  .empty-state p { font-size: 13px; line-height: 1.7; margin: 0; }
+
+  .composer { display: flex; align-items: flex-end; gap: 10px; padding: 14px 24px 18px; border-top: 1px solid var(--border); background: var(--panel); flex-shrink: 0; }
+  .composer textarea { flex: 1; resize: none; border: 1px solid var(--border); background: var(--bg); color: var(--ink); border-radius: 20px; padding: 11px 16px; font-size: 14px; line-height: 1.5; max-height: 120px; min-height: 42px; outline: none; transition: border-color .15s ease, box-shadow .15s ease; }
+  .composer textarea:focus { border-color: var(--sage); box-shadow: 0 0 0 3px rgba(62,92,80,0.12); }
+  .send-btn { width: 42px; height: 42px; border-radius: 50%; border: none; background: var(--sage); color: var(--sage-soft); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; box-shadow: var(--shadow-sm); }
+  .send-btn:hover:not(:disabled) { filter: brightness(1.08); }
+  .send-btn:disabled { opacity: 0.45; }
+  .send-btn svg { width: 18px; height: 18px; transition: transform .12s ease; }
+  .send-btn.sending svg { animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .banner { margin: 14px 24px 0; padding: 11px 14px; border-radius: 10px; font-size: 12.5px; line-height: 1.6; animation: msgIn .18s ease; }
+  .banner.warn { background: var(--gold-soft); }
+  .banner.error { background: rgba(166,71,58,0.12); color: var(--danger); }
+
+  /* ---- نام‌گذاری اولیه ---- */
+  .name-gate { position: fixed; inset: 0; background: rgba(23,27,24,0.55); backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center; z-index: 20; padding: 20px; }
+  .name-card { background: var(--panel); border-radius: 18px; padding: 26px; max-width: 340px; width: 100%; text-align: center; box-shadow: var(--shadow-md); animation: gateIn .22s ease; }
+  @keyframes gateIn { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .gate-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 16px; }
+  .gate-dots span { width: 6px; height: 6px; border-radius: 50%; background: var(--border); transition: background-color .2s ease, width .2s ease; }
+  .gate-dots span.on { background: var(--sage); width: 16px; border-radius: 3px; }
+  .name-card .room-icon { width: 46px; height: 46px; font-size: 20px; margin: 0 auto 14px; background: var(--sage-soft); color: var(--sage); }
+  .name-card h2 { margin: 0 0 6px; font-size: 16px; }
+  .name-card p { margin: 0 0 16px; font-size: 13px; color: var(--ink-soft); line-height: 1.7; }
+  .name-card input { width: 100%; border: 1px solid var(--border); background: var(--bg); color: var(--ink); border-radius: 12px; padding: 11px 14px; font-size: 14px; outline: none; margin-bottom: 12px; text-align: center; transition: border-color .15s ease, box-shadow .15s ease; }
+  .name-card input:focus { border-color: var(--sage); box-shadow: 0 0 0 3px rgba(62,92,80,0.12); }
+  .name-card button { width: 100%; border: none; background: var(--sage); color: var(--sage-soft); border-radius: 12px; padding: 12px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .name-card button:hover:not(:disabled) { filter: brightness(1.08); }
+  .choice-row { display: flex; gap: 10px; margin-bottom: 4px; }
+  .choice-row button { flex: 1; background: var(--bg); color: var(--ink); border: 1px solid var(--border); }
+  .choice-row button:hover { background: var(--sage-soft); }
+  .choice-row button.primary { background: var(--sage); color: var(--sage-soft); border-color: var(--sage); }
+  .choice-row button.primary:hover { filter: brightness(1.08); }
+  .gate-back { background: none; border: none; color: var(--ink-soft); font-size: 12px; cursor: pointer; margin-top: 10px; text-decoration: underline; width: auto; padding: 0; }
+  .badge-admin { display: inline-block; font-size: 10px; background: var(--gold-soft); color: var(--gold); border-radius: 6px; padding: 1px 6px; margin-inline-start: 4px; vertical-align: middle; }
+  .room-section-label { font-size: 11px; color: var(--ink-soft); padding: 14px 10px 4px; }
+
+  button:focus-visible, textarea:focus-visible, input:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+  @media (max-width: 720px) {
+    .sidebar { width: 100%; min-width: 0; border-inline-end: none; position: absolute; inset: 0; z-index: 2; }
+    .chat { position: absolute; inset: 0; }
+    .app[data-view="chat"] .sidebar { display: none; }
+    .app[data-view="rooms"] .chat { display: none; }
+    .back-btn { display: inline-flex; }
+    .chat-header, .messages, .composer { padding-inline: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="name-gate" id="nameGate">
+  <div class="name-card" id="gateCard"></div>
+</div>
+
+<div class="app" id="app" data-view="rooms">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M9 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="#FBFAF7" stroke-width="1.6"/><path d="M15 18a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="#FBFAF7" stroke-width="1.6"/><path d="M11 10.5 13 13.5" stroke="#FBFAF7" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </div>
+      <div class="brand-text">
+        <h1>پیوند</h1>
+        <p>پیام‌رسان مجموعه شهید احمدی روشن</p>
+      </div>
+    </div>
+
+    <button id="installBtn" class="install-btn" hidden>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 4v12m0 0 4-4m-4 4-4-4M5 19h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      نصب پیوند روی گوشی
+    </button>
+    <div id="iosBanner" class="ios-banner" hidden>
+      برای نصب: دکمهٔ اشتراک‌گذاری Safari را بزنید و «Add to Home Screen» را انتخاب کنید.
+      <button id="iosBannerClose" aria-label="بستن">✕</button>
+    </div>
+
+    <nav class="room-list" id="roomList" aria-label="فهرست اتاق‌های گفتگو"></nav>
+
+    <div class="me-row" id="meRow" hidden>
+      <div class="avatar" id="meAvatar"></div>
+      <div>
+        <div class="me-name" id="meName"></div>
+        <div class="me-sub"><button id="changeNameBtn" type="button">تغییر اطلاعات</button></div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="chat">
+    <header class="chat-header">
+      <button class="back-btn" id="backBtn" aria-label="بازگشت به فهرست اتاق‌ها">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div>
+        <h2 id="chatTitle">—</h2>
+        <p id="chatDesc"></p>
+      </div>
+    </header>
+
+    <div id="banners"></div>
+
+    <div class="messages" id="messages"></div>
+
+    <form class="composer" id="composer">
+      <textarea id="input" rows="1" placeholder="پیام خود را بنویسید…" aria-label="متن پیام"></textarea>
+      <button type="submit" class="send-btn" id="sendBtn" aria-label="ارسال پیام">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M4 12l16-7-6.5 16-2.7-7.3L4 12Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+      </button>
+    </form>
+  </main>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  const BASE_ROOMS = [
+    { id: "general",       name: "گفتگوی عمومی",        desc: "گپ و گفت روزمره اعضای مجموعه", icon: "💬" },
+    { id: "announcements", name: "اطلاعیه‌ها",           desc: "خبرها و اعلامیه‌های مجموعه",     icon: "📌" },
+    { id: "classes",       name: "کلاس‌ها و دوره‌ها",     desc: "هماهنگی کلاس‌ها و برنامه‌های آموزشی", icon: "📚" },
+    { id: "events",        name: "رویدادها",             desc: "برنامه‌ریزی مراسم و برنامه‌ها",   icon: "🎉" },
+  ];
+  const CORE_ROOM = { id: "core", name: "هسته سخت", desc: "گفتگوی ویژه اعضای هسته سخت", icon: "🛡" };
+  const POLL_MS = 3000;
+  const COLORS = ["#3E5C50", "#B98B4E", "#7B5E9E", "#3E6E8C", "#A6473A", "#5C7A3E"];
+
+  const el = {
+    app: document.getElementById("app"),
+    roomList: document.getElementById("roomList"),
+    chatTitle: document.getElementById("chatTitle"),
+    chatDesc: document.getElementById("chatDesc"),
+    messages: document.getElementById("messages"),
+    composer: document.getElementById("composer"),
+    input: document.getElementById("input"),
+    sendBtn: document.getElementById("sendBtn"),
+    backBtn: document.getElementById("backBtn"),
+    meRow: document.getElementById("meRow"),
+    meAvatar: document.getElementById("meAvatar"),
+    meName: document.getElementById("meName"),
+    banners: document.getElementById("banners"),
+    nameGate: document.getElementById("nameGate"),
+    gateCard: document.getElementById("gateCard"),
+    changeNameBtn: document.getElementById("changeNameBtn"),
+  };
+
+  function safeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function safeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function safeRemove(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  function escapeHtml(str) {
+    var d = document.createElement("div");
+    d.textContent = str == null ? "" : str;
+    return d.innerHTML;
+  }
+  function initials(name) { return (name || "؟").trim().slice(0, 1); }
+  function genId() {
+    var id = "u" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+    safeSet("peyvand:id", id);
+    return id;
+  }
+  function pick(arr) {
+    var c = arr[Math.floor(Math.random() * arr.length)];
+    safeSet("peyvand:color", c);
+    return c;
+  }
+
+  let me = {
+    id: safeGet("peyvand:id") || genId(),
+    name: safeGet("peyvand:name") || "",
+    color: safeGet("peyvand:color") || pick(COLORS),
+    role: safeGet("peyvand:role") || "",        // "admin" | "core" | "team"
+    team: safeGet("peyvand:team") || "",        // نام قابل‌نمایش تیم (برای نقش team یا core)
+    teamRoom: safeGet("peyvand:teamRoom") || "", // شناسه‌ی اتاق تیم/هسته
+  };
+  let adminTeams = []; // فقط برای مدیر: فهرست همه‌ی تیم‌های ثبت‌شده
+  let currentRoom = safeGet("peyvand:lastRoom") || "general";
+  let roomMessages = {};
+  let lastSeen = {};
+  let pollTimer = null;
+
+  function showBanner(kind, text) {
+    el.banners.innerHTML = '<div class="banner ' + kind + '">' + escapeHtml(text) + "</div>";
+  }
+  function clearBanner() { el.banners.innerHTML = ""; }
+
+  var FIXED_TONES = { announcements: "teal", classes: "plum" };
+  function hashTone(str) {
+    var h = 0;
+    for (var i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) >>> 0;
+    var tones = ["", "plum", "teal"];
+    return tones[h % tones.length];
+  }
+  function toneFor(roomId) {
+    if (FIXED_TONES[roomId]) return FIXED_TONES[roomId];
+    if (roomId === "core" || roomId === "general") return "";
+    return hashTone(roomId);
+  }
+
+  // ---------- فهرست اتاق‌ها بر اساس نقش ----------
+  function getRoomList() {
+    var list = BASE_ROOMS.slice();
+    if (me.role === "core") {
+      list.push(CORE_ROOM);
+    } else if (me.role === "team" && me.teamRoom) {
+      list.push({ id: me.teamRoom, name: me.team, desc: "گفتگوی اختصاصی تیم " + me.team, icon: "👥" });
+    } else if (me.role === "admin") {
+      list.push(CORE_ROOM);
+      adminTeams.forEach(function (t) {
+        list.push({ id: t.roomId, name: t.name, desc: "گفتگوی اختصاصی تیم " + t.name, icon: "👥" });
+      });
+    }
+    return list;
+  }
+  function findRoom(roomId) {
+    return getRoomList().filter(function (r) { return r.id === roomId; })[0];
+  }
+
+  function renderRoomList() {
+    var rooms = getRoomList();
+    var baseHtml =
+      '<div class="room-list-label">اتاق‌های گفتگو</div>' +
+      BASE_ROOMS.map(roomButtonHtml).join("");
+
+    var extraHtml = "";
+    if (me.role === "core") {
+      extraHtml = '<div class="room-section-label">هسته سخت</div>' + roomButtonHtml(CORE_ROOM);
+    } else if (me.role === "team" && me.teamRoom) {
+      extraHtml = '<div class="room-section-label">تیم من</div>' + roomButtonHtml(rooms.filter(function (r) { return r.id === me.teamRoom; })[0]);
+    } else if (me.role === "admin") {
+      extraHtml = '<div class="room-section-label">هسته سخت</div>' + roomButtonHtml(CORE_ROOM);
+      extraHtml += '<div class="room-section-label">همه‌ی تیم‌ها (ویژه مدیر)</div>';
+      extraHtml += adminTeams.length
+        ? adminTeams.map(function (t) { return roomButtonHtml({ id: t.roomId, name: t.name, desc: "گفتگوی تیم " + t.name, icon: "👥" }); }).join("")
+        : '<div class="room-desc" style="padding:4px 12px;">هنوز هیچ تیمی ثبت نشده</div>';
+    }
+
+    el.roomList.innerHTML = baseHtml + extraHtml;
+
+    Array.prototype.forEach.call(el.roomList.querySelectorAll(".room-btn"), function (btn) {
+      btn.addEventListener("click", function () {
+        selectRoom(btn.getAttribute("data-room"));
+        el.app.setAttribute("data-view", "chat");
+      });
+    });
+  }
+
+  function roomButtonHtml(r) {
+    var active = r.id === currentRoom ? " active" : "";
+    var tone = toneFor(r.id);
+    return (
+      '<button class="room-btn' + active + '" data-room="' + r.id + '"' + (tone ? ' data-tone="' + tone + '"' : "") + '>' +
+        '<span class="room-icon">' + r.icon + "</span>" +
+        '<span class="room-info">' +
+          '<span class="room-name">' + escapeHtml(r.name) + "</span>" +
+          '<span class="room-desc">' + escapeHtml(r.desc) + "</span>" +
+        "</span>" +
+      "</button>"
+    );
+  }
+
+  function renderSkeleton() {
+    el.messages.innerHTML =
+      '<div class="skeleton">' +
+        '<div class="skeleton-row"><div class="skeleton-dot"></div><div class="skeleton-bar" style="width:70%"></div></div>' +
+        '<div class="skeleton-row own"><div class="skeleton-dot"></div><div class="skeleton-bar" style="width:50%"></div></div>' +
+        '<div class="skeleton-row"><div class="skeleton-dot"></div><div class="skeleton-bar" style="width:85%"></div></div>' +
+      "</div>";
+  }
+
+  function selectRoom(roomId) {
+    var room = findRoom(roomId);
+    if (!room) return;
+    currentRoom = roomId;
+    safeSet("peyvand:lastRoom", roomId);
+    el.chatTitle.textContent = room.name;
+    el.chatDesc.textContent = room.desc;
+    renderRoomList();
+    if (!roomMessages[roomId]) {
+      roomMessages[roomId] = null;
+      renderSkeleton();
+      loadRoom(roomId);
+    } else {
+      renderMessages();
+    }
+  }
+
+  async function loadRoom(roomId) {
+    try {
+      var res = await fetch("/api/messages?room=" + encodeURIComponent(roomId));
+      if (!res.ok) throw new Error("bad_status");
+      var data = await res.json();
+      roomMessages[roomId] = data.messages || [];
+      lastSeen[roomId] = roomMessages[roomId].length
+        ? roomMessages[roomId][roomMessages[roomId].length - 1].createdAt
+        : 0;
+      if (roomId === currentRoom) renderMessages();
+      clearBanner();
+    } catch (e) {
+      showBanner("error", "اتصال به سرور برقرار نشد. اتصال اینترنت را بررسی کنید.");
+    }
+  }
+
+  async function pollRoom(roomId) {
+    try {
+      var since = lastSeen[roomId] || 0;
+      var res = await fetch("/api/messages?room=" + encodeURIComponent(roomId) + "&after=" + since);
+      if (!res.ok) return;
+      var data = await res.json();
+      if (data.messages && data.messages.length) {
+        roomMessages[roomId] = (roomMessages[roomId] || []).concat(data.messages);
+        lastSeen[roomId] = data.messages[data.messages.length - 1].createdAt;
+        if (roomId === currentRoom) renderMessages();
+      }
+      clearBanner();
+    } catch (e) { /* اتصال موقت قطع بود؛ در دور بعدی دوباره امتحان می‌شود */ }
+  }
+
+  function startPolling() {
+    if (pollTimer) clearInterval(pollTimer);
+    pollTimer = setInterval(function () { pollRoom(currentRoom); }, POLL_MS);
+  }
+
+  function dateLabel(ts) {
+    var d = new Date(ts);
+    var now = new Date();
+    var sameDay = function (a, b) { return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); };
+    if (sameDay(d, now)) return "امروز";
+    var yesterday = new Date(now); yesterday.setDate(now.getDate() - 1);
+    if (sameDay(d, yesterday)) return "دیروز";
+    try { return d.toLocaleDateString("fa-IR", { year: "numeric", month: "long", day: "numeric" }); } catch (e) { return ""; }
+  }
+
+  function renderMessages() {
+    var room = findRoom(currentRoom);
+    var list = roomMessages[currentRoom];
+
+    if (!room) return;
+
+    if (list == null) { renderSkeleton(); return; }
+
+    if (!list.length) {
+      el.messages.innerHTML =
+        '<div class="empty-state">' +
+          '<div class="room-icon" style="margin:0 auto 14px;">' + room.icon + "</div>" +
+          "<h3>هنوز پیامی در «" + escapeHtml(room.name) + "» نیست</h3>" +
+          "<p>اولین نفری باشید که در این اتاق گفتگو را شروع می‌کند.</p>" +
+        "</div>";
+      return;
+    }
+
+    var atBottom = el.messages.scrollTop + el.messages.clientHeight >= el.messages.scrollHeight - 40;
+    var GROUP_WINDOW_MS = 5 * 60 * 1000;
+    var html = "";
+    var lastDateKey = null;
+    var prev = null;
+
+    list.forEach(function (m) {
+      var d = new Date(m.createdAt);
+      var dateKey = d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate();
+      if (dateKey !== lastDateKey) {
+        html += '<div class="date-sep">' + escapeHtml(dateLabel(m.createdAt)) + "</div>";
+        lastDateKey = dateKey;
+        prev = null;
+      }
+
+      var isMe = m.senderId === me.id;
+      var grouped = !!(prev && prev.senderId === m.senderId && (m.createdAt - prev.createdAt) < GROUP_WINDOW_MS);
+      var time = "";
+      try { time = d.toLocaleTimeString("fa-IR", { hour: "2-digit", minute: "2-digit" }); } catch (e) {}
+      var avatarColor = isMe ? me.color : (m.color || "#B98B4E");
+      var badge = m.role === "admin" ? '<span class="badge-admin">مدیر</span>' : "";
+
+      html +=
+        '<div class="msg-row' + (isMe ? " own" : "") + (grouped ? " grouped" : "") + '">' +
+          '<div class="avatar" style="background:' + avatarColor + '">' + escapeHtml(initials(isMe ? me.name : m.senderName)) + "</div>" +
+          '<div class="msg-body">' +
+            '<div class="msg-meta">' +
+              '<span class="msg-sender">' + escapeHtml(isMe ? (me.name || "شما") : (m.senderName || "عضو مجموعه")) + badge + "</span>" +
+              '<span class="msg-time">' + time + "</span>" +
+            "</div>" +
+            '<div class="msg-bubble" data-time="' + time + '">' + escapeHtml(m.text || "") + "</div>" +
+          "</div>" +
+        "</div>";
+
+      prev = m;
+    });
+
+    el.messages.innerHTML = html;
+
+    if (atBottom || list[list.length - 1].senderId === me.id) {
+      el.messages.scrollTop = el.messages.scrollHeight;
+    }
+  }
+
+  async function sendMessage(text) {
+    text = text.trim();
+    if (!text) return;
+    el.sendBtn.disabled = true;
+    el.sendBtn.classList.add("sending");
+    try {
+      var res = await fetch("/api/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ room: currentRoom, text: text, senderId: me.id, senderName: me.name, role: me.role || "member" }),
+      });
+      if (res.status === 429) {
+        showBanner("warn", "کمی سریع پیام می‌فرستید — چند لحظه صبر کنید.");
+        return;
+      }
+      if (!res.ok) throw new Error("bad_status");
+      var data = await res.json();
+      var msg = data.message;
+      msg.color = me.color;
+      roomMessages[currentRoom] = (roomMessages[currentRoom] || []).concat([msg]);
+      lastSeen[currentRoom] = msg.createdAt;
+      renderMessages();
+      clearBanner();
+    } catch (e) {
+      showBanner("error", "ارسال پیام انجام نشد. اتصال خود را بررسی کنید.");
+    } finally {
+      el.sendBtn.disabled = false;
+      el.sendBtn.classList.remove("sending");
+    }
+  }
+
+  function autoGrow() {
+    el.input.style.height = "auto";
+    el.input.style.height = Math.min(el.input.scrollHeight, 120) + "px";
+  }
+
+  el.composer.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var text = el.input.value;
+    el.input.value = "";
+    autoGrow();
+    sendMessage(text);
+  });
+  el.input.addEventListener("input", autoGrow);
+  el.input.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); el.composer.requestSubmit(); }
+  });
+  el.backBtn.addEventListener("click", function () { el.app.setAttribute("data-view", "rooms"); });
+
+  function applyMe() {
+    el.meAvatar.style.background = me.color;
+    el.meAvatar.textContent = initials(me.name);
+    el.meName.textContent = me.name || "شما";
+    el.meRow.hidden = false;
+  }
+
+  // ================= ویزارد ورود (نقش، تیم، اسم) =================
+  function openGate() { el.nameGate.style.display = "flex"; }
+  function closeGate() { el.nameGate.style.display = "none"; }
+
+  function renderGate(step) {
+    var dotIndex = step === "admin" ? 0 : step === "core" ? 0 : step === "team" ? 1 : 2;
+    var dotsHtml = '<div class="gate-dots">' +
+      [0, 1, 2].map(function (i) { return '<span class="' + (i <= dotIndex ? "on" : "") + '"></span>'; }).join("") +
+      "</div>";
+
+    if (step === "admin") {
+      el.gateCard.innerHTML = dotsHtml +
+        '<div class="room-icon">🪢</div>' +
+        "<h2>به پیوند خوش آمدید</h2>" +
+        "<p>آیا مقام بالایی در مجموعه دارید؟ (مثل مدیریت مجموعه)</p>" +
+        '<div class="choice-row">' +
+          '<button class="primary" id="gateYes">بله، مدیرم</button>' +
+          '<button id="gateNo">خیر</button>' +
+        "</div>";
+      document.getElementById("gateYes").addEventListener("click", function () {
+        me.role = "admin"; me.team = ""; me.teamRoom = "";
+        renderGate("name");
+      });
+      document.getElementById("gateNo").addEventListener("click", function () { renderGate("core"); });
+      return;
+    }
+
+    if (step === "core") {
+      el.gateCard.innerHTML = dotsHtml +
+        '<div class="room-icon">🛡</div>' +
+        "<h2>عضویت در هسته سخت</h2>" +
+        "<p>آیا از اعضای هسته سخت مجموعه هستید؟</p>" +
+        '<div class="choice-row">' +
+          '<button class="primary" id="gateYes">بله</button>' +
+          '<button id="gateNo">خیر</button>' +
+        "</div>" +
+        '<button class="gate-back" id="gateBack">بازگشت</button>';
+      document.getElementById("gateYes").addEventListener("click", function () {
+        me.role = "core"; me.team = "هسته سخت"; me.teamRoom = "core";
+        renderGate("name");
+      });
+      document.getElementById("gateNo").addEventListener("click", function () { renderGate("team"); });
+      document.getElementById("gateBack").addEventListener("click", function () { renderGate("admin"); });
+      return;
+    }
+
+    if (step === "team") {
+      el.gateCard.innerHTML = dotsHtml +
+        '<div class="room-icon">👥</div>' +
+        "<h2>اسم تیمت چیه؟</h2>" +
+        "<p>همه‌ی کسانی که اسم تیمشون یکیه، توی یک گروه با هم می‌بینن؛ تیم‌های دیگه گروه شما رو نمی‌بینن.</p>" +
+        '<input id="gateInput" maxlength="60" placeholder="مثلاً: تیم رسانه" autocomplete="off">' +
+        '<button id="gateSubmit">ادامه</button>' +
+        '<button class="gate-back" id="gateBack">بازگشت</button>';
+      var inp = document.getElementById("gateInput");
+      setTimeout(function () { inp.focus(); }, 30);
+      var submit = async function () {
+        var v = inp.value.trim().slice(0, 60);
+        if (!v) { inp.focus(); return; }
+        var btn = document.getElementById("gateSubmit");
+        btn.disabled = true; btn.textContent = "لطفاً صبر کنید…";
+        try {
+          var res = await fetch("/api/teams/resolve", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name: v }),
+          });
+          var data = await res.json();
+          if (!res.ok) throw new Error(data && data.error);
+          me.role = "team"; me.team = data.name; me.teamRoom = data.roomId;
+          renderGate("name");
+        } catch (e) {
+          btn.disabled = false; btn.textContent = "ادامه";
+          showBanner("error", "ثبت تیم انجام نشد. دوباره تلاش کنید.");
+        }
+      };
+      document.getElementById("gateSubmit").addEventListener("click", submit);
+      inp.addEventListener("keydown", function (e) { if (e.key === "Enter") submit(); });
+      document.getElementById("gateBack").addEventListener("click", function () { renderGate("core"); });
+      return;
+    }
+
+    if (step === "name") {
+      el.gateCard.innerHTML = dotsHtml +
+        '<div class="room-icon">🪪</div>' +
+        "<h2>اسمت چیه؟</h2>" +
+        "<p>این اسم توی پروفایل و کنار پیام‌هات نشون داده می‌شه.</p>" +
+        '<input id="gateInput" maxlength="30" placeholder="مثلاً: علی محمدی" autocomplete="off" value="' + escapeHtml(me.name) + '">' +
+        '<button id="gateSubmit">ورود به گفتگو</button>';
+      var inp2 = document.getElementById("gateInput");
+      setTimeout(function () { inp2.focus(); }, 30);
+      var submit2 = function () {
+        var v = inp2.value.trim().slice(0, 30);
+        if (!v) { inp2.focus(); return; }
+        me.name = v;
+        safeSet("peyvand:name", me.name);
+        safeSet("peyvand:role", me.role);
+        safeSet("peyvand:team", me.team);
+        safeSet("peyvand:teamRoom", me.teamRoom);
+        applyMe();
+        closeGate();
+        afterOnboarding();
+      };
+      document.getElementById("gateSubmit").addEventListener("click", submit2);
+      inp2.addEventListener("keydown", function (e) { if (e.key === "Enter") submit2(); });
+      return;
+    }
+  }
+
+  function startWizard() { openGate(); renderGate("admin"); }
+
+  el.changeNameBtn.addEventListener("click", function () { startWizard(); });
+
+  // بعد از تکمیل ورود (یا اولین بار یا بعد از تغییر اطلاعات)
+  var pollingStarted = false;
+  function afterOnboarding() {
+    var proceed = function () {
+      renderRoomList();
+      if (!findRoom(currentRoom)) currentRoom = "general";
+      if (!roomMessages[currentRoom]) { roomMessages[currentRoom] = null; renderSkeleton(); }
+      loadRoom(currentRoom).then(function () {
+        if (!pollingStarted) { startPolling(); pollingStarted = true; }
+      });
+    };
+    if (me.role === "admin") { loadAdminTeams().then(proceed); } else { proceed(); }
+  }
+
+  async function loadAdminTeams() {
+    try {
+      var res = await fetch("/api/teams");
+      if (!res.ok) return;
+      var data = await res.json();
+      adminTeams = data.teams || [];
+    } catch (e) { /* بی‌اثر؛ دفعه‌ی بعد دوباره تلاش می‌شود */ }
+  }
+
+  // ---- نصب روی صفحه‌ی اصلی ----
+  var deferredInstallPrompt = null;
+  var installBtn = document.getElementById("installBtn");
+  var iosBanner = document.getElementById("iosBanner");
+  var iosBannerClose = document.getElementById("iosBannerClose");
+
+  window.addEventListener("beforeinstallprompt", function (e) {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    installBtn.hidden = false;
+  });
+  installBtn.addEventListener("click", async function () {
+    if (!deferredInstallPrompt) return;
+    installBtn.hidden = true;
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+  });
+  window.addEventListener("appinstalled", function () { installBtn.hidden = true; });
+
+  function isIos() { return /iphone|ipad|ipod/i.test(navigator.userAgent); }
+  function isStandalone() {
+    return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+  }
+  if (isIos() && !isStandalone() && !safeGet("peyvand:iosBannerDismissed")) {
+    iosBanner.hidden = false;
+  }
+  iosBannerClose.addEventListener("click", function () {
+    iosBanner.hidden = true;
+    safeSet("peyvand:iosBannerDismissed", "1");
+  });
+
+  function init() {
+    el.chatTitle.textContent = "—";
+    if (window.innerWidth > 720) el.app.setAttribute("data-view", "chat");
+
+    var hasProfile = me.name && me.role && (me.role !== "team" || me.teamRoom);
+    if (hasProfile) {
+      applyMe();
+      closeGate();
+      afterOnboarding();
+    } else {
+      startWizard();
+      renderRoomList();
+    }
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js").catch(function () {});
+    }
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
+
